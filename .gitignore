@@ -1,0 +1,9 @@
+docvqa/
+sroie/
+funsd/
+cord/
+hf_cache/
+*.zip
+*.rar
+__pycache__/
+.env
