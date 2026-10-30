@@ -1,6 +1,15 @@
 # Agentic Cross-Border Payment Settlement & Compliance Platform
 
-An enterprise-grade, multi-agent cross-border settlement engine built with **LangGraph**, **Qdrant Vector DB**, **EasyOCR**, and **Gradio**. Features native state-pausing (`interrupt()`) for Human-In-The-Loop (HITL) compliance overrides.
+A multi-agent cross-border payment settlement and compliance engine built with **LangGraph**, **Qdrant**, **EasyOCR**, and **Gradio**. It uses LangGraph's native `interrupt()` to pause execution for Human-in-the-Loop (HITL) compliance review.
+
+---
+
+## Key Features & Architecture
+
+- **Multi-Agent Orchestration:** LangGraph state machine with parallel fan-out and conditional branching between agents.
+- **Vector Watchlist Screening:** Semantic entity matching in Qdrant against sanctions lists (e.g., OFAC SDN and the EU Consolidated Financial Sanctions List).
+- **Document AI & OCR Ingestion:** Text extraction from scanned trade invoices, receipts, and forms using EasyOCR.
+- **Human-in-the-Loop (HITL) Gate:** High-risk transactions interrupt the graph and wait for manual approval or rejection before the state checkpoint is finalized.
 
 ---
 
@@ -12,45 +21,44 @@ AgenticXBorder/
 ├── config/            # System settings and environment constants
 ├── core/              # Database models, state definitions, and Qdrant client
 ├── graph/             # LangGraph workflow definition and state machine
-├── ui/                # Gradio dashboard interface layout and event handlers
+├── ui/                # Gradio dashboard layout and event handlers
 ├── app.py             # Server entry point and dashboard launcher
-├── download_docvqa.py # Script for downloading/flattening benchmark datasets
+├── download_docvqa.py # Downloads and flattens benchmark datasets
 ├── requirements.txt   # Pinned Python dependencies
-└── README.md          # Documentation and project overview
-
-## 🚀 Localhost Access Links
-
-When running the application locally, access the interactive dashboard directly in your web browser using either of these links:
-
-* **Localhost URL:** http://localhost:7860
-* **Loopback IP URL:** http://127.0.0.1:7860
+└── README.md          # Project overview and documentation
+```
 
 ---
 
-## Key Features & Architecture
+## Running Locally
 
-- **Multi-Agent State Orchestration:** Built with LangGraph for deterministic parallel fan-out and conditional state branching.
-- **Vector Watchlist Screening:** High-dimensional semantic entity matching using Qdrant against OFAC and EU illicit trade watchlists.
-- **Document AI & OCR Ingestion:** Real-time text extraction from scanned trade invoices, receipts, and forms using EasyOCR.
-- **Human-In-The-Loop (HITL) Gate:** Automated execution interruption on high-risk transactions requiring manual approval or rejection before state checkpoint finalization.
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+Once the server is running, open the dashboard in your browser at either address:
+
+- http://localhost:7860
+- http://127.0.0.1:7860
 
 ---
 
-## Local Dataset Benchmark & Evaluation Results
+## OCR Benchmark Results
 
-The system's EasyOCR pipeline was evaluated across four standard document-AI benchmarks in local storage (`D:\AgenticXBorder`):
+The EasyOCR pipeline was run on 100 samples from each of four public document-AI datasets (400 documents in total), on CPU.
 
-| Dataset Name | Total Evaluated Samples | OCR Extraction Success | Accuracy / Reliability Rate | Document Type |
-| :--- | :---: | :---: | :---: | :--- |
-| **DocVQA** | 100 | 100 | **100.00%** | Scanned trade documents & forms |
-| **SROIE** | 100 | 100 | **100.00%** | Key info extraction receipts |
-| **FUNSD** | 100 | 100 | **100.00%** | Complex form layouts |
-| **CORD** | 100 | 100 | **100.00%** | Consolidated receipt images |
+| Dataset | Samples | Non-Empty Extractions | Failed | Extraction Rate | Document Type |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **DocVQA** | 100 | 100 | 0 | 100.00% | Scanned industry documents |
+| **SROIE** | 100 | 100 | 0 | 100.00% | Scanned receipts |
+| **FUNSD** | 100 | 100 | 0 | 100.00% | Noisy scanned forms |
+| **CORD** | 100 | 100 | 0 | 100.00% | Receipts (Consolidated Receipt Dataset) |
 
-- **Total Tested:** 400 document samples across all 4 benchmark datasets.
-- **Extraction Reliability:** 100.00% non-empty OCR payload extraction rate under standard CPU execution.
+> **Note:** "Extraction rate" is the share of documents for which EasyOCR returned a non-empty text payload. It is **not** a measure of OCR accuracy: it does not compare the extracted text with ground-truth labels. Character/word error rate (CER/WER) or field-level F1 against each dataset's annotations would be needed to report accuracy.
 
-**Terminal Output from Benchmark Script:**
+**Benchmark script output:**
+
 ```text
 ==========================================
 EVALUATION COMPLETE! Report saved to 'ocr_benchmark_report.json'
@@ -59,3 +67,4 @@ Dataset 'docvqa': Total=100 | Success=100 | Failed=0 | Accuracy Rate=100.00%
 Dataset 'sroie': Total=100 | Success=100 | Failed=0 | Accuracy Rate=100.00%
 Dataset 'funsd': Total=100 | Success=100 | Failed=0 | Accuracy Rate=100.00%
 Dataset 'cord': Total=100 | Success=100 | Failed=0 | Accuracy Rate=100.00%
+```
