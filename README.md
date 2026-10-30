@@ -4,6 +4,20 @@ An enterprise-grade, multi-agent cross-border settlement engine built with **Lan
 
 ---
 
+## Repository Structure
+
+```text
+AgenticXBorder/
+├── agents/            # LangGraph node functions (OCR, Compliance, Risk, Gate)
+├── config/            # System settings and environment constants
+├── core/              # Database models, state definitions, and Qdrant client
+├── graph/             # LangGraph workflow definition and state machine
+├── ui/                # Gradio dashboard interface layout and event handlers
+├── app.py             # Server entry point and dashboard launcher
+├── download_docvqa.py # Script for downloading/flattening benchmark datasets
+├── requirements.txt   # Pinned Python dependencies
+└── README.md          # Documentation and project overview
+
 ## 🚀 Localhost Access Links
 
 When running the application locally, access the interactive dashboard directly in your web browser using either of these links:
